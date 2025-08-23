@@ -1,6 +1,7 @@
 package co.com.crediya.authservice.usecase.user;
 
 
+import co.com.crediya.authservice.model.exception.BusinessException;
 import co.com.crediya.authservice.model.user.User;
 import co.com.crediya.authservice.model.user.gateways.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class UserUseCase {
 
     public Mono<User> saveUser(User user) {
         return userRepository.findByEmail(user.getEmail())
-                .flatMap(existing -> Mono.<User>error(new IllegalArgumentException("El correo ya existe")))
+                .flatMap(existing -> Mono.<User> error(new BusinessException("El correo ya está registrado: " + user.getEmail())))
                 .switchIfEmpty(userRepository.save(user));
     }
 
