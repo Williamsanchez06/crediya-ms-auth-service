@@ -33,10 +33,4 @@ public class UserResponseDTO {
     @JsonProperty("base_salary")
     private BigDecimal baseSalary;
 
-    @JsonProperty("role_id")
-    private UUID roleId;
-
-    @JsonProperty("role_name")
-    private String roleName;
-
 }

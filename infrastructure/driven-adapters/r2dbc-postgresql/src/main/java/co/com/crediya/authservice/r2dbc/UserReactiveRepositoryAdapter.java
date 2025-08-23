@@ -31,4 +31,10 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                 .map(savedEntity -> mapper.map(savedEntity, User.class));
     }
 
+    @Override
+    public Mono<User> findByEmail(String email) {
+        return repository.findByEmail(email)
+                .map(entity -> mapper.map(entity, User.class));
+    }
+
 }

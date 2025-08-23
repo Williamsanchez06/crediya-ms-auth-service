@@ -20,8 +20,6 @@ public class UserMapper {
 
     public static UserResponseDTO toResponseDTO(User user) {
 
-        System.out.println("user.getRole() = " + user.getRole());
-
         return UserResponseDTO.builder()
                 .id(user.getId())
                 .name(user.getName())

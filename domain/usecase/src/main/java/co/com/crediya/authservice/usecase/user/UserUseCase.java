@@ -12,7 +12,9 @@ public class UserUseCase {
     private final UserRepository userRepository;
 
     public Mono<User> saveUser(User user) {
-        return userRepository.save(user);
+        return userRepository.findByEmail(user.getEmail())
+                .flatMap(existing -> Mono.<User>error(new IllegalArgumentException("El correo ya existe")))
+                .switchIfEmpty(userRepository.save(user));
     }
 
 }
