@@ -2,12 +2,15 @@ package co.com.crediya.authservice.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserRequestDTO {
 
     @JsonProperty("first_name")
