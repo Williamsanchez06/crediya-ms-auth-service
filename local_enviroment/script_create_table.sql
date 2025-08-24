@@ -10,7 +10,8 @@ CREATE TABLE auth.roles
 CREATE TABLE auth.users
 (
     user_id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name            VARCHAR(100) NOT NULL,
+    first_name      VARCHAR(100) NOT NULL,
+    last_name       VARCHAR(100) NOT NULL,
     email           VARCHAR(100) NOT NULL UNIQUE,
     password        VARCHAR(100) NOT NULL,
     document_number VARCHAR(20)  NOT NULL UNIQUE,

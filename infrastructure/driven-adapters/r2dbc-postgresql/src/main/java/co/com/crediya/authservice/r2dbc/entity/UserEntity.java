@@ -20,8 +20,11 @@ public class UserEntity {
     @Column("user_id")
     private UUID id;
 
-    @Column("name")
-    private String name;
+    @Column("first_name")
+    private String firstName;
+
+    @Column("last_name")
+    private String lastName;
 
     @Column("email")
     private String email;

@@ -9,10 +9,15 @@ import java.util.UUID;
 @Getter
 public class UserRequestDTO {
 
-    @JsonProperty("name")
+    @JsonProperty("first_name")
     @NotBlank
     @Size(max = 100)
-    private String name;
+    private String firstName;
+
+    @JsonProperty("last_name")
+    @NotBlank
+    @Size(max = 100)
+    private String lastName;
 
     @JsonProperty("email")
     @NotBlank

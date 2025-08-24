@@ -15,7 +15,8 @@ public class User {
     private static final BigDecimal DEFAULT_BASE_SALARY = new BigDecimal("1500000.00");
 
     private UUID id;
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     private String documentNumber;
