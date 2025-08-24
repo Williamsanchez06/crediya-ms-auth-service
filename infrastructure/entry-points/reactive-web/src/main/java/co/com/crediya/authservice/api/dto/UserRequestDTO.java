@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -33,6 +34,12 @@ public class UserRequestDTO {
     @NotBlank
     @Size(max = 20)
     private String documentNumber;
+
+    @JsonProperty("base_salary")
+    @NotNull(message = "El salario base es obligatorio")
+    @DecimalMin(value = "0.0", inclusive = true, message = "El salario base no puede ser negativo")
+    @DecimalMax(value = "15000000.0", inclusive = true, message = "El salario base no puede superar 15,000,000")
+    private BigDecimal baseSalary;
 
     @JsonProperty("phone")
     @NotBlank

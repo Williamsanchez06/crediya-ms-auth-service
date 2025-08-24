@@ -15,6 +15,7 @@ public class UserMapper {
         user.setPassword(dto.getPassword());
         user.setDocumentNumber(dto.getDocumentNumber());
         user.setPhone(dto.getPhone());
+        user.setBaseSalary(dto.getBaseSalary());
         user.setRole(role);
         return user;
     }

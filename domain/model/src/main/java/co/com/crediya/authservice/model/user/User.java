@@ -12,8 +12,6 @@ import java.util.UUID;
 @Builder
 public class User {
 
-    private static final BigDecimal DEFAULT_BASE_SALARY = new BigDecimal("1500000.00");
-
     private UUID id;
     private String firstName;
     private String lastName;
@@ -22,6 +20,6 @@ public class User {
     private String documentNumber;
     private String phone;
     private Role role;
-    private BigDecimal baseSalary = DEFAULT_BASE_SALARY;
+    private BigDecimal baseSalary;
 
 }
