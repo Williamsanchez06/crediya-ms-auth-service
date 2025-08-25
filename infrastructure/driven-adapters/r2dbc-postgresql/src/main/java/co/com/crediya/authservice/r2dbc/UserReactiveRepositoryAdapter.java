@@ -37,4 +37,9 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                 .map(entity -> mapper.map(entity, User.class));
     }
 
+    @Override
+    public Mono<Boolean> existsByDocumentNumber(String documentNumber) {
+        return repository.existsByDocumentNumber(documentNumber);
+    }
+
 }
