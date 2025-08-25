@@ -15,7 +15,10 @@ public class UserUseCase {
     public Mono<User> saveUser(User user) {
         return userRepository.findByEmail(user.getEmail())
                 .flatMap(existing -> Mono.<User>error(new BusinessException("El correo ya está registrado: " + user.getEmail())))
-                .switchIfEmpty(Mono.defer(() -> userRepository.save(user)));
+                .switchIfEmpty(userRepository.existsByDocumentNumber(user.getDocumentNumber())
+                        .flatMap(exists -> exists
+                                ? Mono.<User>error(new BusinessException("El documento ya está registrado: " + user.getDocumentNumber()))
+                                : userRepository.save(user)));
     }
 
 }

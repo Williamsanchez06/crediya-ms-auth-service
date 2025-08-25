@@ -31,7 +31,7 @@ class UserUseCaseTest {
     }
 
     @Test
-    @DisplayName("guardar usuario exitosamente cuando el email no está registrado")
+    @DisplayName("guardar usuario exitosamente cuando el email no está registrado y el numero de documento no está registrado")
     void saveUserSuccessfullyWhenEmailNotRegistered() {
         User user = new User();
         user.setEmail("williamsanchez@crediya.com");
@@ -42,6 +42,7 @@ class UserUseCaseTest {
         user.setRole(null);
         user.setBaseSalary(BigDecimal.valueOf(100.0));
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Mono.empty());
+        when(userRepository.existsByDocumentNumber(user.getDocumentNumber())).thenReturn(Mono.just(false));
         when(userRepository.save(user)).thenReturn(Mono.just(user));
 
         StepVerifier.create(userUseCase.saveUser(user))
@@ -59,11 +60,12 @@ class UserUseCaseTest {
         user.setEmail("williamsanchez@crediya.com");
         user.setFirstName("William 2");
         user.setLastName("Sanchez 2");
-        user.setDocumentNumber("123456789");
+        user.setDocumentNumber("1234567891");
         user.setPhone("3001234567");
         user.setRole(null);
         user.setBaseSalary(BigDecimal.valueOf(100.0));
         when(userRepository.findByEmail(user.getEmail())).thenReturn(Mono.just(user));
+        when(userRepository.existsByDocumentNumber(user.getDocumentNumber())).thenReturn(Mono.just(false));
 
         StepVerifier.create(userUseCase.saveUser(user))
                 .expectErrorMatches(throwable -> throwable instanceof BusinessException &&
@@ -73,4 +75,30 @@ class UserUseCaseTest {
         verify(userRepository).findByEmail(user.getEmail());
         verify(userRepository, never()).save(user);
     }
+
+    @Test
+    @DisplayName("Lanzar exepcion cuando el documento ya está registrado")
+    void throwExceptionWhenDocumentAlreadyRegistered() {
+        User user = new User();
+        user.setEmail("newuser@crediya.com");
+        user.setFirstName("New");
+        user.setLastName("User");
+        user.setDocumentNumber("987654321");
+        user.setPhone("3009876543");
+        user.setRole(null);
+        user.setBaseSalary(BigDecimal.valueOf(200.0));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Mono.empty());
+        when(userRepository.existsByDocumentNumber(user.getDocumentNumber())).thenReturn(Mono.just(true));
+
+        StepVerifier.create(userUseCase.saveUser(user))
+                .expectErrorMatches(throwable -> throwable instanceof BusinessException &&
+                        throwable.getMessage().equals("El documento ya está registrado: " + user.getDocumentNumber()))
+                .verify();
+
+        verify(userRepository).findByEmail(user.getEmail());
+        verify(userRepository).existsByDocumentNumber(user.getDocumentNumber());
+        verify(userRepository, never()).save(user);
+    }
+
+
 }
