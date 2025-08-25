@@ -1,3 +1,5 @@
+CREATE DATABASE crediya_auth;
+
 CREATE SCHEMA IF NOT EXISTS auth;
 
 CREATE TABLE auth.roles
@@ -19,3 +21,6 @@ CREATE TABLE auth.users
     role_id         UUID REFERENCES auth.roles (role_id),
     base_salary     NUMERIC(12, 2)
 );
+
+INSERT INTO auth.roles (role_id, name, description)
+VALUES ('a2845053-d5b0-44c9-b825-207c55b12f08', 'William', 'PRUEBA DESCRIPCION');
