@@ -1,7 +1,6 @@
 package co.com.crediya.authservice.api;
 
 import co.com.crediya.authservice.api.dto.UserRequestDTO;
-import co.com.crediya.authservice.api.exception.GlobalExceptionHandler;
 import co.com.crediya.authservice.api.exception.NotFoundException;
 import co.com.crediya.authservice.api.validation.RequestValidator;
 import co.com.crediya.authservice.usecase.role.RoleUseCase;
@@ -25,7 +24,6 @@ public class UserHandler {
     private final UserUseCase userUseCase;
     private final RoleUseCase roleUseCase;
     private final RequestValidator requestValidator;
-    private final GlobalExceptionHandler globalExceptionHandler;
 
     public Mono<ServerResponse> saveUser(ServerRequest request) {
         log.info("[saveUser] Iniciando proceso de guardado de usuario");
@@ -56,7 +54,6 @@ public class UserHandler {
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .bodyValue(toResponseDTO(saved));
                             });
-                })
-                .onErrorResume(globalExceptionHandler::handle);
+                });
     }
 }
