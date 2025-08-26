@@ -6,6 +6,7 @@ import co.com.crediya.authservice.r2dbc.entity.UserEntity;
 import co.com.crediya.authservice.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -16,9 +17,13 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         UserEntity,
         UUID,
         UserReactiveRepository
-> implements UserRepository {
-    public UserReactiveRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper) {
+        > implements UserRepository {
+
+    private final TransactionalOperator transactionalOperator;
+
+    public UserReactiveRepositoryAdapter(UserReactiveRepository repository, ObjectMapper mapper, TransactionalOperator transactionalOperator) {
         super(repository, mapper, d -> mapper.map(d, User.class));
+        this.transactionalOperator = transactionalOperator;
     }
 
     @Override
@@ -27,8 +32,10 @@ public class UserReactiveRepositoryAdapter extends ReactiveAdapterOperations<
         if (user.getRole() != null) {
             entity.setRoleId(user.getRole().getId());
         }
+
         return repository.save(entity)
-                .map(savedEntity -> mapper.map(savedEntity, User.class));
+                .map(savedEntity -> mapper.map(savedEntity, User.class))
+                .as(transactionalOperator::transactional);
     }
 
     @Override
