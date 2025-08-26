@@ -3,6 +3,7 @@ package co.com.crediya.authservice.r2dbc;
 import co.com.crediya.authservice.model.role.Role;
 import co.com.crediya.authservice.model.user.User;
 import co.com.crediya.authservice.r2dbc.entity.UserEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -21,38 +23,48 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserReactiveRepositoryAdapterTest {
 
-    @InjectMocks
-    UserReactiveRepositoryAdapter repositoryAdapter;
+    private UserReactiveRepositoryAdapter repositoryAdapter;
 
     @Mock
-    UserReactiveRepository repository;
+    private UserReactiveRepository repository;
 
     @Mock
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
+
+    @Mock
+    private TransactionalOperator transactionalOperator;
+
+    @BeforeEach
+    void setUp() {
+        repositoryAdapter = new UserReactiveRepositoryAdapter(repository, mapper, transactionalOperator);
+    }
 
     @Test
-    @DisplayName("guardar usuario exitosamente con rol")
+    @DisplayName("Guardar usuario exitosamente con rol")
     void saveUserSuccessfullyWithRole() {
+        when(transactionalOperator.transactional(any(Mono.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         User user = new User();
         user.setEmail("williamsanchez@crediya.com");
         user.setFirstName("William");
         user.setLastName("Sanchez");
+        user.setPassword("password123");
         user.setDocumentNumber("123456789");
         user.setPhone("3001234567");
-        user.setRole(null);
         user.setBaseSalary(BigDecimal.valueOf(100.0));
-
         UUID roleId = UUID.randomUUID();
         user.setRole(new Role(roleId, "Admin", "rol prueba"));
+
         UserEntity entity = new UserEntity();
         entity.setEmail(user.getEmail());
         entity.setFirstName(user.getFirstName());
         entity.setLastName(user.getLastName());
+        entity.setPassword(user.getPassword());
         entity.setDocumentNumber(user.getDocumentNumber());
         entity.setPhone(user.getPhone());
         entity.setBaseSalary(user.getBaseSalary());
-        entity.setRoleId(user.getRole().getId());
+        entity.setRoleId(roleId);
 
         when(mapper.map(user, UserEntity.class)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(Mono.just(entity));
@@ -62,10 +74,10 @@ class UserReactiveRepositoryAdapterTest {
                 .expectNext(user)
                 .verifyComplete();
 
-        verify(repository).save(entity);
         verify(mapper).map(user, UserEntity.class);
+        verify(repository).save(entity);
         verify(mapper).map(entity, User.class);
-
+        verify(transactionalOperator).transactional(any(Mono.class));
     }
 
     @Test

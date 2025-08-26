@@ -7,9 +7,11 @@ import co.com.crediya.authservice.model.user.gateways.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -17,6 +19,7 @@ import java.math.BigDecimal;
 
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserUseCaseTest {
 
     @Mock
@@ -24,11 +27,6 @@ class UserUseCaseTest {
 
     @InjectMocks
     private UserUseCase userUseCase;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     @DisplayName("guardar usuario exitosamente cuando el email no está registrado y el numero de documento no está registrado")
