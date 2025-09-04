@@ -37,3 +37,6 @@ adapters:
     schema: "auth"
     username: "postgres"
     password: 12345
+jwt:
+  secret: 1D3SaAPART24eJWT123456
+  expiration: 86400000 # 1 day in milliseconds
